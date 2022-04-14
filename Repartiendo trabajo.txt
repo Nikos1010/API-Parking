@@ -1,0 +1,9 @@
+//Preguntar por cuantos espacios hay en el parqueadero
+//Mostrar la cantidad de plazas que hay
+//No permitir agregar mas de la cantidad de espacios
+//Guardar la informacion (placa, slot, type, color, fecha entrada)
+-Las primeras 3 horas cuentan como una.
+-Despues de 8 horas se cobra un dia.
+-Se cobra por cada dia, asi pasen unas horas del otro dia.
+Hora: 3 USD
+Dia: 57 USD
