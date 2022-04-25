@@ -1,5 +1,5 @@
 const express = require('express');
-const connection = require('../../../database/mysql');
+const connection = require('../../../database/db');
 
 const router = express.Router();
 
@@ -25,7 +25,7 @@ router.get('/cars/:id', (req, res) => {
         if (results.length > 0) {
             res.json(results);
         } else {
-            res.send('Not result');
+            res.status(404).send('Not result');
         }
     })
 });

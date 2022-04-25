@@ -58,6 +58,10 @@ select * from color;
 select * from car_type;
 select * from car;
 select * from invoice;
+select * from invoice_detail;
 
 UPDATE parking_lot SET disponibility = true WHERE id_slot = 2;
+SELECT TIMESTAMPDIFF(HOUR, entrance, departure) 
+    FROM invoice INNER JOIN invoice_detail ON invoice_detail.id_invoice = invoice.id_invoice
+    WHERE invoice.id_invoice = 1;
 

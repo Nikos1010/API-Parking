@@ -1,5 +1,5 @@
 const express = require('express');
-const connection = require('../../../database/mysql');
+const connection = require('../../../database/db');
 const calculatedHours = require('../../../functions/calculated-hours')
 
 const router = express.Router();
@@ -17,7 +17,7 @@ router.post('/exit/:id', (req, res) => {
 
     connection.query(sql, invoiceDetailObj, error => {
         if(error) throw error;
-        res.redirect('Exit from parking');
+        res.send('Exit from parking');
     });
 });
 
