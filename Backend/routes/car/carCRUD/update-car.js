@@ -1,5 +1,5 @@
 const express = require('express');
-const connection = require('../../../database/mysql');
+const connection = require('../../../database/db');
 //Tiene problemas, no se que pasa
 
 const router = express.Router();
