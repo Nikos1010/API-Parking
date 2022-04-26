@@ -2,6 +2,7 @@
 -- create database parking;
 -- use parking;
 -- Color del carro
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Noithyung15-25%';
 create table color (
 	id_color int not null primary key auto_increment,
     color varchar(20) not null
@@ -58,6 +59,10 @@ select * from color;
 select * from car_type;
 select * from car;
 select * from invoice;
+select * from invoice_detail;
 
 UPDATE parking_lot SET disponibility = true WHERE id_slot = 2;
+SELECT TIMESTAMPDIFF(HOUR, entrance, departure) 
+    FROM invoice INNER JOIN invoice_detail ON invoice_detail.id_invoice = invoice.id_invoice
+    WHERE invoice.id_invoice = 1;
 

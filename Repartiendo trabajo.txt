@@ -7,3 +7,13 @@
 -Se cobra por cada dia, asi pasen unas horas del otro dia.
 Hora: 3 USD
 Dia: 57 USD
+
+//Invoice se maneja con bases NoSQL
+//Cambiar la configuracion database a Archivo de configuracion
+//Modificar el Swagger
+//Hacer los SQL con procedimientos almacenados 
+//Agregar los controladores
+//Agregar los models
+//Manejar Mysql2 y sequelize
+
+//Archivos a descargar: body-parser, express, nodemon, mysql2, sequelize

@@ -1,23 +1,40 @@
 const express = require('express');
-const connection = require('./database/mysql');
 const bodyParser = require('body-parser');
-const adminRoute = require('./routes/admin');
+
+const vehicleRoutes = require('./routes/vehicle');
+
+const sequelize = require('./database/db');
+const Vehicle = require('./models/vehicle');
+const VehicleType = require('./models/vehicle-type');
+const VehicleColor = require('./models/vehicle-color');
+const Parking = require('./models/parking');
+const ParkingDetail = require('./models/parking-detail');
+const Invoice = require('./models/invoice');
 
 const app = express();
+app.set('port', process.env.PORT || 3000);
 app.use(bodyParser.json());
 
-app.use(adminRoute);
-
-app.get('/', (req, res) => {
-    res.send('Welcome to my API');
-});
-
-connection.connect( error => {
-    if(error) throw error;
-    console.log('Database Run!');
-});
+app.use(vehicleRoutes);
 
 
-app.listen(3000, () => {
-    console.log('Server Fun');
-});
+Vehicle.belongsTo(VehicleType);
+VehicleType.hasMany(Vehicle);
+VehicleColor.hasMany(Vehicle);
+Vehicle.belongsTo(VehicleColor);
+Parking.belongsTo(ParkingDetail);
+ParkingDetail.hasMany(Parking);
+Parking.belongsToMany(Vehicle, { through: Invoice });
+
+sequelize
+    .sync({ /*force: true*/ })
+    .then(result => {
+        app.listen(app.get('port'), () => {
+            console.log('Server on port ', app.get('port'));
+        });
+    })
+    .catch(err => console.log(err));
+
+// app.get('/', (req, res) => {
+//     res.send('Welcome to my API');
+// });

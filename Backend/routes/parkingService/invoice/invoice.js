@@ -1,5 +1,5 @@
 const express = require('express');
-const connection = require('../../../database/mysql');
+const connection = require('../../../database/db');
 const detailParking = require('../detail-parking/detail-parking');
 
 const router = express.Router();
