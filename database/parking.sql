@@ -2,6 +2,7 @@
 -- create database parking;
 -- use parking;
 -- Color del carro
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Noithyung15-25%';
 create table color (
 	id_color int not null primary key auto_increment,
     color varchar(20) not null
