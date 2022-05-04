@@ -1,18 +1,18 @@
 const Sequelize = require('sequelize');
 
-const sequelize = require('../database/db');
+const sequelize = require('../database/db').sequelize;
 
-const VehicleType = sequelize.define('vehicleType', {
+const VehicleColor = sequelize.define('vehicleColor', {
     id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         allowNull: false,
         primaryKey: true
     },
-    typeCar: {
+    color: {
         type: Sequelize.STRING,
         allowNull: false
     }
 });
 
-module.exports = VehicleType;
+module.exports = VehicleColor;

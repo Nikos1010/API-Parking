@@ -9,11 +9,16 @@ Hora: 3 USD
 Dia: 57 USD
 
 //Invoice se maneja con bases NoSQL
-//Cambiar la configuracion database a Archivo de configuracion
 //Modificar el Swagger
-//Hacer los SQL con procedimientos almacenados 
-//Agregar los controladores
-//Agregar los models
-//Manejar Mysql2 y sequelize
+//Hacer los SQL con procedimientos almacenados (Un solo modelo)
+//No permitir que se repitan los datos de placa(Ni en mayuscula)
+//Revisar el Invoices
+//SQL inyection / OWASP
+//cadenas de conexion para NodeJS
 
-//Archivos a descargar: body-parser, express, nodemon, mysql2, sequelize
+//Archivos a descargar: body-parser, express, nodemon, mysql2, sequelize, mongodb, swagger-jsdoc, swagger-ui-express
+    HECHO
+//Cambiar la configuracion database a Archivo de configuracion
+//Agregar los controladores
+//Agregar los models 
+//Manejar Mysql2 y sequelize 
