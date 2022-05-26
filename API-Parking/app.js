@@ -4,22 +4,9 @@ const dotenv = require('dotenv');
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
 const path = require('path');
+const jsYaml = require('js-yaml');
+const fs = require('fs');
 
-const swaggerSpec = {
-    definition: {
-        openapi: "3.0.0",
-        info: {
-            title: "Parking API",
-            version: "1.0.0"
-        },
-        servers: [
-            {
-                url: "http://localhost:3000"
-            }
-        ]
-    },
-    apis: [`${path.join(__dirname, "./routes/*.js")}`]
-}
 const vehicleRoutes = require('./routes/vehicle');
 const parkingRoutes = require('./routes/parking');
 const invoiceRoutes = require('./routes/invoice');
@@ -42,7 +29,11 @@ app.use(bodyParser.json());
 app.use(vehicleRoutes);
 app.use(parkingRoutes);
 app.use(invoiceRoutes);
-app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerJsDoc(swaggerSpec)));
+const openApiDocument = jsYaml.load(
+    fs.readFileSync('spec/parking.yaml', 'utf-8'),
+);
+const options = { explorer: true };
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(openApiDocument, options));
 
 
 Vehicle.belongsTo(VehicleType);
