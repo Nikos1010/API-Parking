@@ -1,6 +1,8 @@
-const Sequelize = require('sequelize');
+import Sequelize from 'sequelize';
 
-const sequelize = require('../database/db').sequelize;
+import { sequelize } from '../database/db.js';
+
+// const sequelize = require('../database/db').sequelize;
 
 const VehicleType = sequelize.define('vehicleType', {
     id: {
@@ -15,4 +17,4 @@ const VehicleType = sequelize.define('vehicleType', {
     }
 });
 
-module.exports = VehicleType;
+export default VehicleType;

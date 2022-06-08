@@ -1,6 +1,7 @@
-const Sequelize = require('sequelize');
+import Sequelize from 'sequelize';
 
-const sequelize = require('../database/db').sequelize;
+import {sequelize} from '../database/db.js';
+// const sequelize = sequelize.sequelize;
 
 const Vehicle = sequelize.define('vehicle', {
     id: {
@@ -12,7 +13,11 @@ const Vehicle = sequelize.define('vehicle', {
     plate: {
         type: Sequelize.STRING(8),
         allowNull: false
+    },
+    status: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
     }
 });
 
-module.exports = Vehicle;
+export default Vehicle;

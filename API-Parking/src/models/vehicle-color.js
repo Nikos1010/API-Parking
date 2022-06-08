@@ -1,6 +1,6 @@
-const Sequelize = require('sequelize');
+import Sequelize from 'sequelize';
 
-const sequelize = require('../database/db').sequelize;
+import { sequelize } from '../database/db.js';
 
 const VehicleColor = sequelize.define('vehicleColor', {
     id: {
@@ -15,4 +15,4 @@ const VehicleColor = sequelize.define('vehicleColor', {
     }
 });
 
-module.exports = VehicleColor;
+export default VehicleColor;

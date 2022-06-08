@@ -1,4 +1,4 @@
-const dotenv = require('dotenv');
+import dotenv from 'dotenv';
 dotenv.config();
 
 const env = process.env.NODE_ENV;
@@ -9,10 +9,12 @@ const dev = {
     },
     db: {
         database: "parking",
-        user: "root",
+        username: "root",
         password: "Noithyung15-25%",
-        host: "localhost",
-        dialect: "mysql"
+        options: {
+            host: "localhost",
+            dialect: "mysql"
+        }
     },
     dbMongo: {
         connectionUrl: "mongodb+srv://Noith:QIlyDwLZFyH3sEcP@cluster0.ddb2b.mongodb.net/parkingApi?retryWrites=true&w=majority"
@@ -23,4 +25,4 @@ const config = {
     dev
 }
 
-module.exports = config[env];
+export default config[env];

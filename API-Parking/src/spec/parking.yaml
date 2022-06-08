@@ -6,17 +6,20 @@ info:
   termsOfService: "http://swagger.io/terms/"
   contact:
     email: "noithyung1525@gmail.com"
-host: "localhost:3000"
+host: "localhost:5000"
 basePath: "/"
 tags:
 - name: "vehicle"
   description: "Access to Vehicle information"
 - name: "parking"
   description: "Access to Parking information"
+- name: "Invoice"
+  description: "Access to Invoice information"
 - name: "user"
   description: "Operations about user"
 schemes:
 - "http"
+- "https"
 paths:
   /vehicle:
     get:
@@ -27,18 +30,25 @@ paths:
       operationId: "getVehicles"
       produces:
       - "application/json"
-      parameters: []
       responses:
         "200":
           description: "successful operation"
           schema:
             type: "array"
             items:
-              $ref: "#/definitions/Vehicle"
+              $ref: "#/definitions/VehicleShow"
         "400":
           description: "Invalid status value"
-      security:
-      - api_key: []
+        "404":
+          description: "Not Found"
+          schema:
+            type: "object"
+            properties:
+              msg:
+                type: "string"
+                description: "A message for the not found vehicles"
+            example:
+              msg: "Vehicles not found"
   /vehicle/{vehicleId}:
     get:
       tags:
@@ -54,20 +64,25 @@ paths:
           description: "ID of vehicle to return"
           required: true
           type: "integer"
-          format: "int64"
       responses:
         "200":
           description: "successful operation"
           schema:
             type: "array"
             items:
-              $ref: "#/definitions/Vehicle"
+              $ref: "#/definitions/VehicleShow"
         "400":
           description: "Invalid ID supplied"
         "404":
           description: "Vehicle not found"
-      security:
-      - api_key: []
+          schema:
+            type: "object"
+            properties:
+              msg:
+                type: "string"
+                description: "A message for the not found vehicles"
+            example:
+              msg: "Vehicle not found"
     put:
       tags:
       - "vehicle"
@@ -107,7 +122,7 @@ paths:
       - "vehicle"
       summary: "Delete purchase vehicle by ID"
       description: "For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors"
-      operationId: "postDeleteVehicle"
+      operationId: "deleteVehicle"
       produces:
       - "application/json"
       parameters:
@@ -117,18 +132,44 @@ paths:
         required: true
         type: "integer"
         minimum: 1.0
-        format: "int64"
       responses:
+        "200":
+          descripion: "Vehicle successfully removed"
         "400":
           description: "Invalid ID supplied"
         "404":
           description: "Vehicle not found"
+  /vehicle/add-vehicle:
+    post:
+      tags:
+      - "vehicle"
+      summary: "Add a new vehicle to the database"
+      description: "Send JSON file with vehicle information"
+      operationId: "postAddVehicle"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Vehicle object to be added to database"
+        required: true
+        schema:
+          $ref: "#/definitions/Vehicle"
+      responses:
+        "200":
+          description: "Vehicle added"
+        "405":
+          description: "Invalid input"
+        "500":
+          description: "Some server Error"
   /vehicle/add-color:
     post:
       tags:
       - "vehicle"
       summary: "Add a new color to the database"
-      description: ""
+      description: "Send JSON file with color information"
       operationId: "postColor"
       consumes:
       - "application/json"
@@ -146,8 +187,8 @@ paths:
           description: "Color added"
         "405":
           description: "Invalid input"
-      security:
-      - api_key: []
+        "500":
+          description: "Some server Error"
   /vehicle/colors:
     get:
       tags:
@@ -215,27 +256,6 @@ paths:
           description: "Invalid status value"
       security:
       - api_key: []
-  /add-vehicle:
-    post:
-      tags:
-      - "vehicle"
-      summary: "Add a new vehicle to the database"
-      description: ""
-      operationId: "postAddVehicle"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Vehicle color object to be added to database"
-        required: true
-        schema:
-          $ref: "#/definitions/Color"
-      responses:
-        "200":
-          description: "Vehicle added"
-        "405":
-          description: "Invalid input"
   /user:
     post:
       tags:
@@ -422,18 +442,6 @@ paths:
           description: "Invalid username supplied"
         "404":
           description: "User not found"
-securityDefinitions:
-  petstore_auth:
-    type: "oauth2"
-    authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
-    flow: "implicit"
-    scopes:
-      write:pets: "modify pets in your account"
-      read:pets: "read your pets"
-  api_key:
-    type: "apiKey"
-    name: "api_key"
-    in: "header"
 definitions:
   Vehicle:
     type: "object"
@@ -444,29 +452,48 @@ definitions:
     properties:
       id:
         type: "integer"
-        format: "int64"
         example: 6
-      color:
-        $ref: "#/definitions/Color"
-      typeCar:
-        $ref: "#/definitions/TypeCar"
+      vehicleColorId:
+        type: "integer"
+        example: 4
+      vehicleTypeId:
+        type: "integer"
+        example: 1
       plate:
         type: "string"
         example: "AWS830"
       status:
-        type: "string"
+        type: "boolean"
         description: "vehicle status in the parking"
-        enum:
-        - "available"
-        - "deleted"
+        example: true
+  VehicleShow:
+    type: "object"
+    required:
+    - "plate"
+    - "typeCar"
+    - "color"
+    properties:
+      id:
+        type: "integer"
+        example: 6
+      vehicleType:
+        $ref: "#/definitions/TypeCar"
+      vehicleColor:
+        $ref: "#/definitions/Color"
+      plate:
+        type: "string"
+        example: "AWS830"
+      status:
+        type: "boolean"
+        description: "vehicle status in the parking"
+        example: true
   Color:
     type: "object"
     properties:
       id:
         type: "integer"
-        format: "int64"
         example: 2
-      name:
+      color:
         type: "string"
         example: "White"
   TypeCar:
@@ -474,9 +501,8 @@ definitions:
     properties:
       id:
         type: "integer"
-        format: "int64"
         example: 3
-      name:
+      typeCar:
         type: "string"
         example: "trunk"
   Order:
@@ -484,7 +510,6 @@ definitions:
     properties:
       id:
         type: "integer"
-        format: "int64"
       petId:
         type: "integer"
         format: "int64"
@@ -511,7 +536,6 @@ definitions:
     properties:
       id:
         type: "integer"
-        format: "int64"
       username:
         type: "string"
       firstName:
@@ -526,7 +550,6 @@ definitions:
         type: "string"
       userStatus:
         type: "integer"
-        format: "int32"
         description: "User Status"
     xml:
       name: "User"
@@ -535,7 +558,6 @@ definitions:
     properties:
       id:
         type: "integer"
-        format: "int64"
       name:
         type: "string"
     xml:
@@ -545,11 +567,18 @@ definitions:
     properties:
       code:
         type: "integer"
-        format: "int32"
       type:
         type: "string"
       message:
         type: "string"
+  VehicleNotFound:
+    type: "object"
+    properties:
+      msg:
+        type: "string"
+        description: "A message for the not found vehicles"
+    example:
+      msg: "Vehicles not found"
 externalDocs:
   description: "Find out more about Swagger"
   url: "http://swagger.io"
