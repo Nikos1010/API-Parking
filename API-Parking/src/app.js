@@ -27,3 +27,12 @@ app.use(cors())
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(openApiDocument, options));
 
 export default app;
+
+import Vehicle from './models/vehicle.js';
+import VehicleType from './models/vehicle-type.js';
+import VehicleColor from './models/vehicle-color.js';
+
+Vehicle.belongsTo(VehicleType);
+VehicleType.hasMany(Vehicle);
+VehicleColor.hasMany(Vehicle);
+Vehicle.belongsTo(VehicleColor);

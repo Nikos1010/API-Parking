@@ -1,6 +1,6 @@
 import {Router} from'express';
 
-import { getColors, postColor, getTypes, postType, getVehicles, getVehicle, postAddVehicle, deleteVehicle } from '../controllers/vehicle.js';
+import { getColors, postColor, getTypes, postType, getVehicles, getVehicle, postAddVehicle, deleteVehicle, updateVehicle } from '../controllers/vehicle.js';
 
 const router = Router();
 
@@ -15,6 +15,8 @@ router.post('/vehicle/add-type', postType);
 router.get('/vehicle', getVehicles);
 
 router.get('/vehicle/:vehicleId', getVehicle);
+
+router.put('/vehicle/:vehicleId', updateVehicle);
 
 router.delete('/vehicle/:vehicleId', deleteVehicle);
 

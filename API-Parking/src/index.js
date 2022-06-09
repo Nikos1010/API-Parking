@@ -1,28 +1,15 @@
-import { sequelize } from './database/db.js';
 import app from './app.js';
 
-import Vehicle from './models/vehicle.js';
-import VehicleType from './models/vehicle-type.js';
-import VehicleColor from './models/vehicle-color.js';
+app.listen(app.get('port'), () => {
+    console.log('Server on port', process.env.PORT);
+});
 
-Vehicle.belongsTo(VehicleType);
-VehicleType.hasMany(Vehicle);
-VehicleColor.hasMany(Vehicle);
-Vehicle.belongsTo(VehicleColor);
 
-sequelize
-.sync({ /*force: true*/ })
-     .then(result => {
-         app.listen(app.get('port'), () => {
-             console.log('Server on port', process.env.PORT);
-         });
 //         mongoConnect(client => {
 //             app.listen(process.env.PORT, () => {
 //                 console.log('Server on port', process.env.PORT);
 //             });
         // });
-    })
-    .catch(err => console.log(err));
 
 
 

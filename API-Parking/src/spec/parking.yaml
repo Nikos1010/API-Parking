@@ -76,19 +76,15 @@ paths:
         "404":
           description: "Vehicle not found"
           schema:
-            type: "object"
-            properties:
-              msg:
-                type: "string"
-                description: "A message for the not found vehicles"
-            example:
-              msg: "Vehicle not found"
+            type: "array"
+            items:
+              $ref: '#/definitions/VehicleNotFound'
     put:
       tags:
       - "vehicle"
       summary: "Update an existing vehicle"
-      description: ""
-      operationId: "postUpdateVehicle"
+      description: "Update a vehicle that already exists, by sending a JSON file"
+      operationId: "updateVehicle"
       consumes:
       - "application/json"
       produces:
@@ -99,24 +95,32 @@ paths:
         description: "ID that need to be updated"
         required: true
         type: "integer"
-        format: "int64"
       - in: "body"
         name: "body"
-        description: "Pet object that needs to be added to the store"
+        description: "Vehicle object that needs to be added to the store"
         required: true
         schema:
           $ref: "#/definitions/Vehicle"
       responses:
+        "200":
+          description: "Vehicle succesfully upgraded"
+          schema:
+            type: "object"
+            properties:
+              msg:
+                type: "string"
+            example:
+              msg: "Vehicle successfully upgraded"
         "400":
           description: "Invalid ID supplied"
         "404":
           description: "Vehicle not found"
+          schema:
+            type: "array"
+            items:
+              $ref: '#/definitions/VehicleNotFound'
         "405":
           description: "Validation exception"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
     delete:
       tags:
       - "vehicle"
@@ -133,12 +137,14 @@ paths:
         type: "integer"
         minimum: 1.0
       responses:
-        "200":
-          descripion: "Vehicle successfully removed"
-        "400":
-          description: "Invalid ID supplied"
+        "204":
+          description: "Vehicle successfully removed"
         "404":
           description: "Vehicle not found"
+          schema:
+            type: "array"
+            items:
+              $ref: '#/definitions/VehicleNotFound'
   /vehicle/add-vehicle:
     post:
       tags:
@@ -487,6 +493,14 @@ definitions:
         type: "boolean"
         description: "vehicle status in the parking"
         example: true
+  VehicleNotFound:
+    type: "object"
+    properties:
+      msg:
+        type: "string"
+        description: "A message for the not found vehicles"
+    example:
+      msg: "Vehicle not found"
   Color:
     type: "object"
     properties:
@@ -571,14 +585,6 @@ definitions:
         type: "string"
       message:
         type: "string"
-  VehicleNotFound:
-    type: "object"
-    properties:
-      msg:
-        type: "string"
-        description: "A message for the not found vehicles"
-    example:
-      msg: "Vehicles not found"
 externalDocs:
   description: "Find out more about Swagger"
   url: "http://swagger.io"
