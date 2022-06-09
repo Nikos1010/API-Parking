@@ -13,3 +13,15 @@ export const attributesGetVehicle = (modelOne, modelTwo, idVehicle) => {
         where: { id: idVehicle }
     }
 }
+
+export const attributesGetColorOrType = (attributes, idModel) => {
+    if(idModel) {
+        return {
+            attributes: attributes,
+            where: { id: idModel }
+        }
+    }
+    return {
+        attributes: attributes
+    }
+}

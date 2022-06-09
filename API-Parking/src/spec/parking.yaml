@@ -97,13 +97,13 @@ paths:
         type: "integer"
       - in: "body"
         name: "body"
-        description: "Vehicle object that needs to be added to the store"
+        description: "Vehicle object that needs to be added to the parking"
         required: true
         schema:
           $ref: "#/definitions/Vehicle"
       responses:
         "200":
-          description: "Vehicle succesfully upgraded"
+          description: "Vehicle successfully upgraded"
           schema:
             type: "object"
             properties:
@@ -124,7 +124,7 @@ paths:
     delete:
       tags:
       - "vehicle"
-      summary: "Delete purchase vehicle by ID"
+      summary: "Delete the vehicle from the parking lot by ID"
       description: "For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors"
       operationId: "deleteVehicle"
       produces:
@@ -166,10 +166,141 @@ paths:
       responses:
         "200":
           description: "Vehicle added"
+        "404":
+          description: "Color or Type not Found or the Vehicle already exist."
+          schema:
+            type: "object"
+            properties:
+              msg:
+                type: "string"
+            example:
+              msg: "Color or Type not found"
         "405":
           description: "Invalid input"
         "500":
           description: "Some server Error"
+  /vehicle/colors:
+    get:
+      tags:
+      - "vehicle"
+      summary: "Find all vehicle colors"
+      description: "Returns a JSON file with the vehicle colors."
+      operationId: "getColors"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Color"
+        "400":
+          description: "Invalid status value"
+        "404":
+          description: "Colors Not Found"
+          schema:
+            type: "object"
+            properties:
+              msg:
+                type: "string"
+            example:
+              msg: "Colors Not Found"
+  /vehicle/color/{colorId}:
+    get:
+      tags:
+      - "vehicle"
+      summary: "Find Color by ID"
+      description: "Return a JSON file with the color information which is id and color."
+      operationId: "getColor"
+      produces:
+      - "application/json"
+      parameters:
+        - name: "colorId"
+          in: "path"
+          description: "ID of Color to return."
+          required: true
+          type: "integer"
+      responses:
+        "200":
+          description: "Successful Operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#definitions/Color"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Color not found"
+          schema:
+            type: "array"
+            items:
+              $ref: '#/definitions/ColorNotFound'
+    put:
+      tags:
+      - "vehicle"
+      summary: "Update an existing Color"
+      description: "Update a Color that already exists, by sending a JSON file."
+      operationId: "updateColor"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "colorId"
+        in: "path"
+        description: "ID that need to be updated"
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "body"
+        description: "Color object that needs to be added to the parking"
+        required: true
+        schema:
+          $ref: '#/definitions/Color'
+      responses:
+        "200":
+          description: "Color successfully upgraded"
+          schema:
+            type: "object"
+            properties:
+              msg:
+                type: "string"
+            example:
+              msg: "Color successfully upgraded"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Color not found"
+          schema:
+            type: "array"
+            items:
+              $ref: '#/definitions/ColorNotFound'
+    delete:
+      tags:
+      - "vehicle"
+      summary: "Delete the color from the parking lot by ID"
+      description: "For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors."
+      operationId: "deleteColor"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "colorId"
+        in: "path"
+        description: "ID of the color that need to be deleted"
+        required: true
+        type: "integer"
+        minimum: 1.0
+      responses:
+        "204":
+          description: "Color successfully removed"
+        "404":
+          description: "Color not found"
+          schema:
+            type: "array"
+            items:
+              $ref: '#/definitions/ColorNotFound'
   /vehicle/add-color:
     post:
       tags:
@@ -195,27 +326,6 @@ paths:
           description: "Invalid input"
         "500":
           description: "Some server Error"
-  /vehicle/colors:
-    get:
-      tags:
-      - "vehicle"
-      summary: "Find all vehicle colors"
-      description: "Returns a JSON file with the vehicle colors."
-      operationId: "getColors"
-      produces:
-      - "application/json"
-      parameters: []
-      responses:
-        "200":
-          description: "successful operation"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Color"
-        "400":
-          description: "Invalid status value"
-      security:
-      - api_key: []
   /vehicle/add-type:
     post:
       tags:
@@ -239,8 +349,6 @@ paths:
           description: "Type added"
         "405":
           description: "Invalid input"
-      security:
-      - api_key: []
   /vehicle/types:
     get:
       tags:
@@ -250,7 +358,6 @@ paths:
       operationId: "getTypes"
       produces:
       - "application/json"
-      parameters: []
       responses:
         "200":
           description: "successful operation"
@@ -260,8 +367,98 @@ paths:
               $ref: "#/definitions/TypeCar"
         "400":
           description: "Invalid status value"
-      security:
-      - api_key: []
+  /vehicle/type/{typeId}:
+    get:
+      tags:
+      - "vehicle"
+      summary: "Find Type by ID"
+      description: "Return a JSON file with the type information, which is id and type."
+      operationId: "getType"
+      produces:
+      - "application/json"
+      parameters:
+        - name: "typeId"
+          in: "path"
+          description: "ID of Type to return."
+          required: true
+          type: "integer"
+      responses:
+        "200":
+          description: "Successful Operation"
+          schema: 
+            type: "array"
+            items:
+              $ref: '#/definitions/TypeCar'
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Type not found"
+          schema:
+            type: "array"
+            items:
+              $ref: '#/definitions/TypeCarNotFound'
+    put:
+      tags:
+      - "vehicle"
+      summary: "Update an existing Type"
+      description: "Update a Type that already exists, by sendinh a JSON file."
+      operationId: "updateType"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "typeId"
+        in: "path"
+        description: "ID that need to be updated"
+        required: true
+        type: "integer"
+      - name: "body"
+        in: "body"
+        description: "Type object that need to be added to the parking."
+        required: true
+        schema:
+          $ref: '#/definitions/TypeCar'
+      responses:
+        "200":
+          description: "Type successfully upgraded"
+          schema:
+            type: "object"
+            propiertes:
+              msg:
+                type: "string"
+            example:
+              msg: "Type successfully upgraded"
+        "404":
+          description: "Type not found"
+          schema:
+            type: "array"
+            items:
+              $ref: '#/definitions/TypeCarNotFound'
+    delete:
+      tags:
+      - "vehicle"
+      summary: "Delete the type from the parking lot by ID"
+      description: "For valid response try integer IDs with positive integer value."
+      operationId: "deleteType"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "typeId"
+        in: "path"
+        description: "ID of the type that need to be deleted"
+        required: true
+        type: "integer"
+        minimum: 1.0
+      responses:
+        "204":
+          description: "Type successfully removed"
+        "404":
+          description: "Type not found"
+          schema:
+            type: "array"
+            items:
+              $ref: '#/definitions/TypeCarNotFound'
   /user:
     post:
       tags:
@@ -510,6 +707,13 @@ definitions:
       color:
         type: "string"
         example: "White"
+  ColorNotFound:
+    type: "object"
+    properties:
+      msg: 
+        type: "string"
+    example:
+      msg: "Color not found"
   TypeCar:
     type: "object"
     properties:
@@ -519,6 +723,13 @@ definitions:
       typeCar:
         type: "string"
         example: "trunk"
+  TypeCarNotFound:
+    type: "object"
+    properties:
+      msg:
+        type: "string"
+    example:
+      msg: "Type not found"
   Order:
     type: "object"
     properties:

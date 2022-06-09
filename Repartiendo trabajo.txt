@@ -13,6 +13,7 @@ Dia: 57 USD
 //Hacer los SQL con procedimientos almacenados (Un solo modelo)
 //No permitir que se repitan los datos de placa(Ni en mayuscula)
 //Revisar el Invoices
+//Generics en node
 //SQL inyection / OWASP
 //cadenas de conexion para NodeJS
 

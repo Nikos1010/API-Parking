@@ -1,8 +1,12 @@
+import fs from 'fs';
 import Vehicle from '../models/vehicle.js';
 import VehicleColor from "../models/vehicle-color.js";
 import VehicleType from "../models/vehicle-type.js";
+
 import { NotFound } from './exception/notFoundException.js';
-import { attributesGetVehicle, attributesGetVehicles } from '../services/attributeSequelize.js';
+import { noRepeatParameter } from './exception/noRepeatParameterException.js';
+
+import { attributesGetVehicle, attributesGetVehicles, attributesGetColorOrType } from '../services/attributeSequelize.js';
 import { softDelete } from '../services/softDeleteObject.js';
 import { updateModel } from '../services/updateModel.js';
 
@@ -10,6 +14,8 @@ export const getVehicles = (req, res) => {
     Vehicle.findAll(attributesGetVehicles(VehicleType, VehicleColor))
         .then(vehicles => {
             NotFound(vehicles, res, 'Vehicles Not Found');
+            const arrayData = JSON.stringify(vehicles);
+            fs.writeFileSync('./src/database/vehicleData.json', arrayData,'utf-8');
         })
         .catch(err => console.log(err));
 }
@@ -50,25 +56,57 @@ export const postAddVehicle = async (req, res) => {
     const existIdColor = await VehicleColor.findByPk(vehicleColorId);
     const existIdtype = await VehicleType.findByPk(vehicleTypeId);
     if(existIdColor && existIdtype){
-        Vehicle.create({ 
-            plate: plate, 
-            vehicleTypeId: vehicleTypeId, 
-            vehicleColorId: vehicleColorId,
-            status: status
-        })
-            .then(result => res.json({ msg: 'Vehicle added' }))
-            .catch(err => console.log(err));
+        const existPlate = noRepeatParameter(plate, "plate");
+        console.log(existPlate)
+        if(!existPlate) {
+            Vehicle.create({ 
+                plate: plate, 
+                vehicleTypeId: vehicleTypeId, 
+                vehicleColorId: vehicleColorId,
+                status: status
+            })
+                .then(result => res.json({ msg: 'Vehicle added' }))
+                .catch(err => console.log(err));
+        } else {
+            NotFound([], res, 'Plate already exist')
+        }
     } else {
         NotFound([], res, 'Color or Type not found')
     }
 }
 
 export const getColors = (req, res) => {
-    VehicleColor.findAll()
+    VehicleColor.findAll(attributesGetColorOrType(['id', 'color']))
         .then(colors => {
             NotFound(colors, res, 'Colors Not Found');
         })
         .catch(err => console.log(err));
+}
+
+export const getColor = (req, res) => {
+    const colorId = req.params.colorId;
+    VehicleColor.findAll(attributesGetColorOrType(['id','color'], colorId))
+        .then(color => {
+            NotFound(color, res, 'Color Not Found')
+        })
+        .catch(err => console.log(err));
+}
+
+export const updateColor = async (req, res) => {
+    const colorId = req.params.colorId;
+    const color = req.body.color;
+    const existIdColor = await VehicleColor.findByPk(colorId);
+    if(existIdColor){
+        updateModel(VehicleColor, { color: color }, res, { id: colorId }, 'Color')
+    } else {
+        NotFound([], res, 'Color Not Found')
+    }
+}
+
+//Colocar la lectura del archivo JSON, por ahora es mejor no utilizarlo
+export const deleteColor = async (req, res) => {
+    const colorId = req.params.colorId;
+    await VehicleColor.destroy({ where: { id: colorId }});
 }
 
 export const postColor = (req, res) => {
@@ -79,11 +117,31 @@ export const postColor = (req, res) => {
 }
 
 export const getTypes = (req, res) => {
-    VehicleType.findAll()
+    VehicleType.findAll(attributesGetColorOrType(['id', 'typeCar']))
         .then(types => {
             NotFound(types, res, 'Types Not Found');
         })
         .catch(err => console.log(err));
+}
+
+export const getType = (req, res) => {
+    const typeId = req.params.typeId;
+    VehicleType.findAll(attributesGetColorOrType(['id', 'typeCar'], typeId))
+        .then(type => {
+            NotFound(type, res, 'Type Not Found');
+        })
+        .catch(err => console.log(err));
+}
+
+export const updateType = async (req, res) => {
+    const typeId = req.params.typeId;
+    const typeCar = req.body.typeCar;
+    const existIdtype = await VehicleType.findByPk(typeId);
+    if(existIdtype) {
+        updateModel(VehicleType, { typeCar: typeCar }, res, { id: typeId }, 'Type');
+    } else {
+        NotFound([], res, 'Type Not Found')
+    }
 }
 
 export const postType = (req, res) => {
