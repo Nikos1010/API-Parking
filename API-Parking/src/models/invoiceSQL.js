@@ -1,6 +1,6 @@
-const Sequelize = require('sequelize');
+import Sequelize from 'sequelize';
 
-const sequelize = require('../database/db').sequelize;
+import { sequelize } from '../database/db.js';
 
 const Invoice = sequelize.define('invoice', {
     id: {
@@ -16,4 +16,4 @@ const Invoice = sequelize.define('invoice', {
     departure: Sequelize.DATE
 });
 
-module.exports = Invoice;
+export default Invoice;

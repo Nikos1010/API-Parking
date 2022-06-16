@@ -6,7 +6,7 @@ import VehicleType from "../models/vehicle-type.js";
 import { NotFound } from './exception/notFoundException.js';
 import { noRepeatParameter } from './exception/noRepeatParameterException.js';
 
-import { attributesGetVehicle, attributesGetVehicles, attributesGetColorOrType } from '../services/attributeSequelize.js';
+import { attributesGetVehicle, attributesGetVehicles, attributesGet } from '../services/attributeSequelize.js';
 import { softDelete } from '../services/softDeleteObject.js';
 import { updateModel } from '../services/updateModel.js';
 
@@ -37,14 +37,19 @@ export const deleteVehicle = async (req, res) => {
 export const updateVehicle = async (req, res) => {
     const vehId = req.params.vehicleId;
     const { plate, vehicleTypeId, vehicleColorId, status } = req.body;
+    const existPlate = noRepeatParameter(plate, "plate");
     const existIdColor = await VehicleColor.findByPk(vehicleColorId);
     const existIdtype = await VehicleType.findByPk(vehicleTypeId);
     if (existIdColor && existIdtype) {
-        const existingVehicleId = await Vehicle.findByPk(vehId);
-        if (existingVehicleId) {
-            updateModel(Vehicle, { plate: plate, vehicleColorId: vehicleColorId, vehicleTypeId: vehicleTypeId, status: status }, res, { id: vehId }, 'Vehicle');
+        if(!existPlate){
+            const existingVehicleId = await Vehicle.findByPk(vehId);
+            if (existingVehicleId) {
+                updateModel(Vehicle, { plate: plate, vehicleColorId: vehicleColorId, vehicleTypeId: vehicleTypeId, status: status }, res, { id: vehId }, 'Vehicle');
+            } else {
+                NotFound([], res, 'Vehicle Not Found');
+            }
         } else {
-            NotFound([], res, 'Vehicle Not Found');
+            NotFound([], res, 'Plate already exist');
         }
     } else {
         NotFound([], res, 'Color or Type not found')
@@ -57,10 +62,9 @@ export const postAddVehicle = async (req, res) => {
     const existIdtype = await VehicleType.findByPk(vehicleTypeId);
     if(existIdColor && existIdtype){
         const existPlate = noRepeatParameter(plate, "plate");
-        console.log(existPlate)
         if(!existPlate) {
             Vehicle.create({ 
-                plate: plate, 
+                plate: plate.toUpperCase(), 
                 vehicleTypeId: vehicleTypeId, 
                 vehicleColorId: vehicleColorId,
                 status: status
@@ -76,7 +80,7 @@ export const postAddVehicle = async (req, res) => {
 }
 
 export const getColors = (req, res) => {
-    VehicleColor.findAll(attributesGetColorOrType(['id', 'color']))
+    VehicleColor.findAll(attributesGet(['id', 'color']))
         .then(colors => {
             NotFound(colors, res, 'Colors Not Found');
         })
@@ -85,7 +89,7 @@ export const getColors = (req, res) => {
 
 export const getColor = (req, res) => {
     const colorId = req.params.colorId;
-    VehicleColor.findAll(attributesGetColorOrType(['id','color'], colorId))
+    VehicleColor.findAll(attributesGet(['id','color'], colorId))
         .then(color => {
             NotFound(color, res, 'Color Not Found')
         })
@@ -106,7 +110,13 @@ export const updateColor = async (req, res) => {
 //Colocar la lectura del archivo JSON, por ahora es mejor no utilizarlo
 export const deleteColor = async (req, res) => {
     const colorId = req.params.colorId;
-    await VehicleColor.destroy({ where: { id: colorId }});
+    const existIdColor = await VehicleColor.findByPk(colorId);
+    if (existIdColor) {
+        await VehicleColor.destroy({ where: { id: colorId } });
+    } else {
+        NotFound([], res, 'Color Not Found')
+    }
+    
 }
 
 export const postColor = (req, res) => {
@@ -117,7 +127,7 @@ export const postColor = (req, res) => {
 }
 
 export const getTypes = (req, res) => {
-    VehicleType.findAll(attributesGetColorOrType(['id', 'typeCar']))
+    VehicleType.findAll(attributesGet(['id', 'typeCar']))
         .then(types => {
             NotFound(types, res, 'Types Not Found');
         })
@@ -126,7 +136,7 @@ export const getTypes = (req, res) => {
 
 export const getType = (req, res) => {
     const typeId = req.params.typeId;
-    VehicleType.findAll(attributesGetColorOrType(['id', 'typeCar'], typeId))
+    VehicleType.findAll(attributesGet(['id', 'typeCar'], typeId))
         .then(type => {
             NotFound(type, res, 'Type Not Found');
         })

@@ -1,18 +1,20 @@
-function calculatedHours(hours) {
+export function calculatedHours(hours, priceHour, priceDay) {
     let result;
     if(hours <= 3) {
-        result = 1
+        return result = 1 * priceHour;
     } else if(hours <= 8) {
-        result = hours - 2;
+        return result = (hours - 2) * priceHour;
     } else {
-        day = calculatedDays(hours);
-        result = 19 * day;
+        result = calculatedDays(hours, priceDay);
+        return result;
     }
-    return result;
 }
 
-function calculatedDays(days) {
-    return result = Math.ceil(days/24);
+function calculatedDays(days, priceDay) {
+    let result
+    if(days > 24) {
+        return result = Math.ceil(days / 24) * priceDay;
+    } else{
+        return result = 1 * priceDay;
+    }
 }
-
-exports.calculatedHours = calculatedHours;

@@ -367,6 +367,12 @@ paths:
               $ref: "#/definitions/TypeCar"
         "400":
           description: "Invalid status value"
+        "404":
+          description: "Types Not Found"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/TypeCarNotFound"
   /vehicle/type/{typeId}:
     get:
       tags:
@@ -401,7 +407,7 @@ paths:
       tags:
       - "vehicle"
       summary: "Update an existing Type"
-      description: "Update a Type that already exists, by sendinh a JSON file."
+      description: "Update a Type that already exists, by sending a JSON file."
       operationId: "updateType"
       consumes:
       - "application/json"
@@ -459,6 +465,441 @@ paths:
             type: "array"
             items:
               $ref: '#/definitions/TypeCarNotFound'
+  /parking/detail/add-detail:
+    post:
+      tags:
+      - "parking"
+      summary: "Add a new parking detail to the database"
+      description: ""
+      operationId: "postAddDetail"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Parking Detail object to be added to database"
+        required: true
+        schema:
+          $ref: "#/definitions/ParkingDetail"
+      responses:
+        "200":
+          description: "Parking Detail added"
+        "405":
+          description: "Invalid input"
+  /parking/details:
+    get:
+      tags:
+      - "parking"
+      summary: "Find all the information about parking details"
+      description: "Returns a JSON file with the Parking Detail."
+      operationId: "getParkingDetails"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ParkingDetail"
+        "400":
+          description: "Invalid status value"
+        "404":
+          description: "Parking Detail Not Found"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ParkingDetailNotFound"
+  /parking/detail/{detailId}:
+    get:
+      tags:
+      - "parking"
+      summary: "Find Parking Detail by ID"
+      description: "Return a JSON file with the parking detail information, which is id, priceHour, priceDay and numberSlots."
+      operationId: "getParkingDetail"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "detailId"
+        in: "path"
+        description: "ID of parking detail to return."
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "Successful Operation"
+          schema:
+            type: "array"
+            items: 
+              $ref: "#/definitions/ParkingDetail"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Parking Detail not found"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ParkingDetailNotFound"
+    put:
+      tags:
+      - "parking"
+      summary: "Update an existing Parking Detail."
+      description: "Update a Parking Detail that already exist, by sending a JSON file."
+      operationId: "updateParkingDetail"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "detailId"
+        in: "path"
+        description: "ID that need to be updated"
+        required: true
+        type: "integer"
+      - name: "body"
+        in: "body"
+        description: "Parking Detail object that need to be added to the parking."
+        required: true
+        schema:
+          $ref: "#/definitions/ParkingDetail"
+      responses:
+        "200":
+          description: "Parking Detail successfully upgraded"
+          schema: 
+            type: "object"
+            properties:
+              msg:
+                type: "string"
+            example:
+              msg: "Parking Detail successfully upgraded"
+        "404":
+          description: "Parking Detail not found"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ParkingDetailNotFound"
+  /parking:
+    get:
+      tags:
+      - "parking"
+      summary: "Find all parking slots"
+      description: "Returns a JSON file with the Parking slots."
+      operationId: "getParkingSlots"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ParkingSlots"
+        "400":
+          description: "Invalid status value"
+        "404":
+          description: "Slot Not Found"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ParkingSlotsNotFound"
+  /parking/{parkingId}:
+    get:
+      tags:
+      - "parking"
+      summary: "Find Parking Slot by ID"
+      description: "Return a JSON file with the parking slot information, which is id and disponibility."
+      operationId: "getParkingSlot"
+      produces:
+      - "application/json"
+      parameters:
+        - name: "parkingId"
+          in: "path"
+          description: "ID of parking slot to return."
+          required: true
+          type: "integer"
+      responses:
+        "200":
+          description: "Successful Operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ParkingSlots"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Parking Slot not found"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ParkingSlotsNotFound"
+  /parking/vehicle-entry:
+    post:
+      tags:
+      - "parking"
+      summary: "Add a new entry of a vehicle into the parking to the database"
+      description: "Registering the entry of a vehicle into the parking"
+      operationId: "postAddEntryVehicle"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Entry of a vehicle object to be added to database"
+        required: true
+        schema:
+          $ref: "#/definitions/EntryVehicle"
+      responses:
+        "200":
+          description: "Entry of a vehicle to the parking added"
+        "405":
+          description: "Invalid input"
+        "404":
+          description: "Vehicle or Slot not found"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/EntryVehicleNotFound"
+        "500":
+          description: "Some server error"
+  /parking/vehicle-entry/all:
+    get:
+      tags:
+      - "parking"
+      summary: "Find all entry of a vehicle into the parking"
+      description: "Returns a JSON file with the entry of a vehicle into the parking."
+      operationId: "getEntryVehicles"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/EntryVehicle"
+        "400":
+          description: "Invalid status value"
+        "404":
+          description: "Entry of a vehicle into the parking Not Found"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/EntryVehicleNotFound"
+  /parking/vehicle-entry/{entryId}:
+    get:
+      tags:
+      - "parking"
+      summary: "Find entry of a vehicle into the parking by ID"
+      description: "Return a JSON file with the entry of a vehicle into the parking information, which is id, parkingId, vehicleId and entrance."
+      operationId: "getEntryVehicle"
+      produces:
+      - "application/json"
+      parameters:
+        - name: "parkingId"
+          in: "path"
+          description: "ID of entry of a vehicle into the parking to return."
+          required: true
+          type: "integer"
+      responses:
+        "200":
+          description: "Successful Operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/EntryVehicle"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Entry of a vehicle into the parking not found"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/EntryVehicleNotFound"
+    put:
+      tags:
+      - "parking"
+      summary: "Update an existing entry of a vehicle into the parking"
+      description: "Update a entry of a vehicle into the parking that already exists, by sending a JSON file."
+      operationId: "updateEntryVehicle"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "entryId"
+        in: "path"
+        description: "ID that need to be updated"
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "body"
+        description: "Entry of a vehicle object to be added to database"
+        required: true
+        schema:
+          $ref: "#/definitions/EntryVehicle"
+      responses:
+        "200":
+          description: "Entry of a vehicle to the parking added"
+          schema: 
+            type: "object"
+            properties:
+              msg:
+                type: "string"
+            example:
+              msg: "Entry of a vehicle to the parking added"
+        "405":
+          description: "Invalid input"
+        "404":
+          description: "Vehicle or Slot not found"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/EntryVehicleNotFound"
+        "500":
+          description: "Some server error"
+  /parking/vehicle-output/{outputId}:
+    put:
+      tags:
+      - "parking"
+      summary: "Add a output of a vehicle into the parking to the database"
+      description: "Registering the output of a vehicle into the parking."
+      operationId: "updateOutputVehicle"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "outputId"
+        in: "path"
+        description: "ID that need to be updated"
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "body"
+        description: "Output of a vehicle object to be added to database"
+        required: true
+        schema:
+          $ref: "#/definitions/OutputVehicle"
+      responses:
+        "200":
+          description: "Output of a vehicle to the parking added"
+          schema: 
+            type: "object"
+            properties:
+              msg:
+                type: "string"
+            example:
+              msg: "Output of a vehicle to the parking added"
+        "405":
+          description: "Invalid input"
+        "404":
+          description: "Vehicle or Slot not found"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/EntryVehicleNotFound"
+        "500":
+          description: "Some server error"
+  /parking/vehicle/invoice:
+    get:
+      tags:
+      - "parking"
+      summary: "Find all parking slots"
+      description: "Returns a JSON file with the Parking slots."
+      operationId: "getParkingSlots"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ParkingSlots"
+        "400":
+          description: "Invalid status value"
+        "404":
+          description: "Slot Not Found"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ParkingSlotsNotFound"
+  /parking/vehicle/invoice/{invoiceId}:
+    get:
+      tags:
+      - "parking"
+      summary: "Find Parking Slot by ID"
+      description: "Return a JSON file with the parking slot information, which is id and disponibility."
+      operationId: "getParkingSlot"
+      produces:
+      - "application/json"
+      parameters:
+        - name: "parkingId"
+          in: "path"
+          description: "ID of parking slot to return."
+          required: true
+          type: "integer"
+      responses:
+        "200":
+          description: "Successful Operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ParkingSlots"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Parking Slot not found"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ParkingSlotsNotFound"
+    put:
+      tags:
+      - "parking"
+      summary: "Update an existing entry of a vehicle into the parking"
+      description: "Update a entry of a vehicle into the parking that already exists, by sending a JSON file."
+      operationId: "updateEntryVehicle"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "entryId"
+        in: "path"
+        description: "ID that need to be updated"
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "body"
+        description: "Entry of a vehicle object to be added to database"
+        required: true
+        schema:
+          $ref: "#/definitions/EntryVehicle"
+      responses:
+        "200":
+          description: "Entry of a vehicle to the parking added"
+          schema: 
+            type: "object"
+            properties:
+              msg:
+                type: "string"
+            example:
+              msg: "Entry of a vehicle to the parking added"
+        "405":
+          description: "Invalid input"
+        "404":
+          description: "Vehicle or Slot not found"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/EntryVehicleNotFound"
+        "500":
+          description: "Some server error"
   /user:
     post:
       tags:
@@ -730,6 +1171,76 @@ definitions:
         type: "string"
     example:
       msg: "Type not found"
+  ParkingSlots:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        example: 2
+      disponibility:
+        type: "boolean"
+        example: true
+  ParkingSlotsNotFound:
+    type: "object"
+    properties: 
+      msg:
+        type: "string"
+    example:
+      msg: "Parking slot not found"
+  ParkingDetail:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        example: 1
+      priceHour:
+        type: "number"
+        format: "double"
+        example: 3
+      priceDay:
+        type: "number"
+        format: "double"
+        example: 57
+      numberSlots:
+        type: "integer"
+        example: 10
+  ParkingDetailNotFound:
+    type: "object"
+    properties:
+      msg:
+        type: "string"
+    example:
+      msg: "Parking Detail not found"
+  EntryVehicle:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        example: 10
+      parkingId:
+        type: "integer"
+        example: 2
+      vehicleId:
+        type: "integer"
+        example: 3
+      entrance:
+        type: "string"
+        format: "date-time"
+        example: "2022-06-16T05:09:08.000Z" 
+  EntryVehicleNotFound:
+    type: "object"
+    properties:
+      msg:
+        type: "string"
+    example:
+      msg: "Entry of a Vehicle to the Parking not found"
+  OutputVehicle:
+    type: "object"
+    properties:
+      departure:
+        type: "string"
+        format: "date-time"
+        example: "2022-06-16T05:06:08.000Z"
   Order:
     type: "object"
     properties:

@@ -11,7 +11,7 @@ let _db;
 
 export const sequelize = new Sequelize(database, username, password, options);
 
-await sequelize.sync(/* force: true */);
+await sequelize.sync({ /*force: true*/ });
 
 export const mongoConnect = callback => {
     MongoClient.connect(connectionUrl)

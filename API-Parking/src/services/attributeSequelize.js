@@ -14,7 +14,7 @@ export const attributesGetVehicle = (modelOne, modelTwo, idVehicle) => {
     }
 }
 
-export const attributesGetColorOrType = (attributes, idModel) => {
+export const attributesGet = (attributes, idModel) => {
     if(idModel) {
         return {
             attributes: attributes,

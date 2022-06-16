@@ -1,6 +1,6 @@
-const Sequelize = require('sequelize');
+import Sequelize from 'sequelize';
 
-const sequelize = require('../database/db').sequelize;
+import { sequelize } from '../database/db.js';
 
 const ParkingDetail = sequelize.define('parkingDetail', {
     id: {
@@ -23,4 +23,4 @@ const ParkingDetail = sequelize.define('parkingDetail', {
     }
 });
 
-module.exports = ParkingDetail;
+export default ParkingDetail;

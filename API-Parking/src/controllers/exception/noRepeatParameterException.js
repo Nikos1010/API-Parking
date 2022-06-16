@@ -12,7 +12,7 @@ export const noRepeatParameter = (value, attribute) => {
         for (const j in parameterJSON[i]) {
             if (parameterJSON[i].hasOwnProperty(attribute)) {
                 const element = parameterJSON[i][j];
-                if(element == value){
+                if (element == value.toUpperCase()){
                     return true;
                 }
             }
